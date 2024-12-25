@@ -7,3 +7,4 @@ Supports C++ syntax for now
 
 ## Credits
 Zserge:- [Blog](https://zserge.com/posts/js-editor/)
+Jsmith:- [Simple VM C++ Code](https://cplusplus.com/forum/lounge/13042/#msg63791)
