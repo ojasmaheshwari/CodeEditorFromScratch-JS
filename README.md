@@ -4,3 +4,6 @@ I am working on making a custom C++ lexer and parser in JS and highlighting ever
 Supports C++ syntax for now
 
 (Note: Might behave unexpectedly when pressing backspace on an empty line)
+
+## Credits
+Zserge:- [Blog](https://zserge.com/posts/js-editor/)

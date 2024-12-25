@@ -13,6 +13,7 @@
 body {
 	height: 100svh;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	font-family: "JetBrains Mono", serif;
@@ -30,5 +31,6 @@ body {
 }
 
 .editor div {
+	display: block;
 	white-space: pre-wrap;
 }
