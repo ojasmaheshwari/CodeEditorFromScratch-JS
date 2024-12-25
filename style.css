@@ -25,12 +25,19 @@ body {
 	background-color: var(--col-primary);
 	border-radius: 1rem;
 	color: white;
-	padding: 1.5rem;
 	outline: none;
 	overflow: scroll;
+	counter-reset: line;
 }
 
 .editor div {
+	position: relative;
 	display: block;
 	white-space: pre-wrap;
+}
+
+.editor div::before {
+	content: counter(line);   /* insert a div with the value of the counter */
+  counter-increment: line;  /* increment the counter */
+	padding: 1rem;
 }
