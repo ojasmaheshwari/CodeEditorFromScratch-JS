@@ -1,4 +1,4 @@
-const keywords = ['class', 'void', 'int', 'return', 'pragma', 'include', 'public', 'private', 'const', 'static', 'true', 'false', 'null', 'NULL', 'nullptr', 'for', 'if', 'while', 'else', 'enum', 'struct', 'typedef', 'struct', 'union', 'assert', 'virtual', 'unsigned', 'char', 'long', 'double'];
+import {keywords} from "./Lexer.js";
 
 const ColorMapping = {
 	keywords: "#569cd6",
@@ -6,6 +6,10 @@ const ColorMapping = {
 	singleQuotationStrings: "#ce9178",
 	comments: "gray",
 };
+
+export function cleanLineFeeds(code) {
+	return code.replace(/\n/g, '\\n');
+}
 
 function coloredSpan(content, color) {
 	return `<span style="color: ${color}">${content}</span>`;
@@ -25,8 +29,6 @@ const RegexRules = {
 };
 
 export function highlight(element) {
-	console.log(RegexRules.multiLineComments);
-	console.log(RegexRules.multiLineComments.test(element.innerText));
 
 	/*
 	let replaceBy = element.innerText
