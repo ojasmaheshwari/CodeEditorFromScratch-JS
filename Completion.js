@@ -1,8 +1,29 @@
-import {lexer, getKeywordsFromLexemes} from "./Lexer.js";
+import {lexer, getKeywordsFromLexemes, isSymbol} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
 import {getRecentKeyword} from "./editor.js";
-import {getCaretGlobalCoordinates} from "./Caret.js";
-import {suggestionContainer} from "./DOMElements.js";
+import {getCaretGlobalCoordinates, getCaretPositionWithNewlines} from "./Caret.js";
+import {editor, suggestionContainer} from "./DOMElements.js";
+
+function triggerKeywordReplace(replaceBy) {
+	const pos = getCaretPositionWithNewlines(editor) - 1;
+
+	console.log("pos: ", pos);
+	const code = editor.innerText;
+
+	if (code[pos] === '\n') pos--;
+
+	let keywordStartIdx, keywordEndIdx;
+
+	for (keywordStartIdx = pos; keywordStartIdx >= 0 && !isSymbol(code[keywordStartIdx]) && code[keywordStartIdx] !== ' ' && code[keywordStartIdx] !== '\n' && code[keywordStartIdx] !== '\t'; keywordStartIdx--);
+	for (keywordEndIdx = pos; keywordEndIdx < code.length && !isSymbol(code[keywordEndIdx]) && code[keywordEndIdx] !== ' ' && code[keywordEndIdx] !== '\n' && code[keywordEndIdx] !== '\t'; keywordEndIdx++);
+
+	console.log(keywordStartIdx, keywordEndIdx);
+	console.log(code.slice(keywordStartIdx, keywordEndIdx + 1));
+}
+
+function handleSuggestionPress(e) {
+	triggerKeywordReplace(e.target.innerText);
+}
 
 export function Completion(editor) {
 	const lexemes = lexer(editor.innerText);
@@ -10,14 +31,16 @@ export function Completion(editor) {
 	const userTypedWord = getRecentKeyword(editor);
 	const scoresData = fuzzySearch(keywords, userTypedWord);
 
-	const coords = getCaretGlobalCoordinates();
-	const caretX = coords.x, caretY = coords.y;
+	const caretCoords = getCaretGlobalCoordinates();
+	const caretX = caretCoords.x, caretY = caretCoords.y;
 
 	suggestionContainer.innerHTML = "";
 	suggestionContainer.style.left = `${caretX}px`;
 	suggestionContainer.style.top = `${caretY + 20}px`;
 
 	if (userTypedWord === '') return;
+
+	suggestionContainer.addEventListener("click", handleSuggestionPress);
 
 	console.log(scoresData);
 
