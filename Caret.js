@@ -42,3 +42,11 @@ export const setCaret = (pos, parent) => {
 	}
 	return pos;
 };
+
+export function getCaretGlobalCoordinates() {
+	const sel = window.getSelection();
+	const range = sel.getRangeAt(0);
+	const rect = range.getClientRects()[0];
+
+	return {x: rect.left, y: rect.top};
+}

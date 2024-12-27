@@ -55,6 +55,7 @@ export function getRecentKeyword(editor) {
 
 	if (code[pos] === '\n') pos--;
 	if (!code[pos]) return;
+	if (code[pos] === ' ') return '';
 
 	let word = "";
 	for (let i = pos + 1; i < code.length && !isSymbol(code[i]) && code[i] !== '\n' && code[i] !== ' ' && code[i] !== '\t'; i++) {

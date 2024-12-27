@@ -25,7 +25,10 @@ export const symbols = [
 	'\'',
 	'"',
 	'.',
-	'->'
+	'->',
+	'[',
+	']',
+	',',
 ];
 
 export function isKeyword(word) {

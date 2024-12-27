@@ -42,3 +42,27 @@ body {
   counter-increment: line;  /* increment the counter */
 	padding: 1rem;
 }
+
+#suggestion-container {
+	position: absolute;
+	min-width: 100px;
+	max-height: 300px;
+	background-color: black;
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+}
+
+.suggestion {
+	display: block;
+	width: 100%;
+	height: 20px;
+	background-color: black;
+	border: solid 1px white;
+	color: white;
+}
+
+.suggestion:hover {
+	background-color: gray;
+	cursor: pointer;
+}
