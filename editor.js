@@ -1,6 +1,8 @@
-import {highlight, cleanLineFeeds} from "./SyntaxHighlighting.js";
-import {getCaretPosition, setCaret} from "./Caret.js";
-import {exampleCode} from "./Lexer.js";
+import {highlight} from "./SyntaxHighlighting.js";
+import {getCaretPosition, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
+import {getKeywordsFromLexemes, isSymbol, lexer} from "./Lexer.js";
+import {fuzzySearch, getEditDistance} from "./FuzzySearch.js";
+import {Completion} from "./Completion.js";
 
 const placeholderCode = `
 #include <cassert>
@@ -47,15 +49,27 @@ int main( int argc, char* argv[] ) {
 }
 `;
 
-export function CreateEditor(editor, defaultCode = exampleCode) {
-	const placeholderCodeLines = defaultCode.split('\n');
-	for (const line of placeholderCodeLines) {
-		editor.innerHTML += "<div>" + line.replace('<', '&lt').replace('>', '&gt').replace('\t', '    ') + "</div>";
+export function getRecentKeyword(editor) {
+	const code = editor.innerText;
+	let pos = getCaretPositionWithNewlines(editor) - 1;
+
+	if (code[pos] === '\n') pos--;
+	if (!code[pos]) return;
+
+	let word = "";
+	for (let i = pos + 1; i < code.length && !isSymbol(code[i]) && code[i] !== '\n' && code[i] !== ' ' && code[i] !== '\t'; i++) {
+		word += code[i];
 	}
-	highlight(editor);
+	for (let i = pos; i >= 0 && !isSymbol(code[i]) && code[i] !== '\n' && code[i] !== ' ' && code[i] !== '\t'; i--) {
+		word = code[i] + word;
+	}
+
+	return word;
+}
+
+function handleTabs(editor) {
 	editor.addEventListener("keydown", (e) => {
 		if (e.which === 9) {
-			console.log(editor.innerHTML);
 			const pos = getCaretPosition(editor) + 4;
 			const range = window.getSelection().getRangeAt(0);
 			range.deleteContents();
@@ -65,11 +79,27 @@ export function CreateEditor(editor, defaultCode = exampleCode) {
 			e.preventDefault();
 		}
 	});
+}
+
+function handleKeyPresses(editor) {
+	highlight(editor);
 	editor.addEventListener("keyup", (e) => {
 		if (e.keyCode >= 0x30 || e.keyCode == 0x20 || e.keyCode == 8) {
 			const pos = getCaretPosition(editor);
 			highlight(editor);
 			setCaret(pos, editor);
+			Completion(editor);
 		}
 	});
+}
+
+export function CreateEditor(editor, defaultCode = placeholderCode) {
+	editor.innerText = "";
+	const placeholderCodeLines = defaultCode.split('\n');
+	for (const line of placeholderCodeLines) {
+		editor.innerHTML += "<div>" + line.replace('<', '&lt').replace('>', '&gt').replace('\t', '    ') + "</div>";
+	}
+
+	handleTabs(editor);
+	handleKeyPresses(editor);
 }

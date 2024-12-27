@@ -24,6 +24,8 @@ export const symbols = [
 	'~',
 	'\'',
 	'"',
+	'.',
+	'->'
 ];
 
 export function isKeyword(word) {
@@ -42,22 +44,6 @@ export function isStringLiteral(literal) {
 	return literal[0] = '"' && literal[literal.length - 1] == '"';
 }
 
-export const exampleCode = `
-#include <iostream>
-class ExampleClass {
-	public:
-		ExampleClass() {}
-		~ExampleClass() {}
-	private:
-		static int sMember;
-		float pMember;
-}
-int main() {
-	std::cout << "Hello world\\n";
-	ExampleClass exampleObject;
-}
-`;
-
 function lexeme(token, type) {
 	return {token: token, type: type};
 };
@@ -71,20 +57,24 @@ export function getSourceFromLexemes(lexemes) {
 	return source;
 }
 
-export function lexer(input = exampleCode) {
+export function getKeywordsFromLexemes(lexemes) {
+	const keywords = new Set();
+
+	for (const lexeme of lexemes) {
+		if (lexeme.type == "keyword") keywords.add(lexeme.token);
+	}
+
+	return Array.from(keywords);
+}
+
+export function lexer(input) {
 	let currentToken = "";
 	const lexemes = [];
 	const lines = input.split('\n');
 
-
 	for (const line of lines) {
 		for (let i = 0; i < line.length; i++) {
 			const char = line[i];
-			if (char === 'o') {
-				if (line[i + 1] === ' ') {
-					console.log(line[i + 2]);
-				}
-			}
 			if (isSymbol(char)) {
 				if (currentToken !== "") lexemes.push(lexeme(currentToken, "keyword"));
 				lexemes.push(lexeme(char, "symbol"));
@@ -102,7 +92,5 @@ export function lexer(input = exampleCode) {
 		lexemes.push(lexeme('\n', "newline"));
 	}
 
-	console.log(lexemes);
-	console.log(getSourceFromLexemes(lexemes));
 	return lexemes;
 }

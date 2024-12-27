@@ -1,11 +1,23 @@
 
+// Ignores newlines, for counting newlines use getCaretPositionWithNewlines
 export function getCaretPosition(element) {
-	const range = window.getSelection().getRangeAt(0);
+	const sel = window.getSelection();
+	const range = sel.getRangeAt(0);
 	const prefix = range.cloneRange();
 	prefix.selectNodeContents(element);
 	prefix.setEnd(range.endContainer, range.endOffset);
 	return prefix.toString().length;
 };
+
+export function getCaretPositionWithNewlines(element) {
+	const sel = window.getSelection();
+	const range = sel.getRangeAt(0);
+	const prefix = range.cloneRange();
+	prefix.selectNodeContents(element);
+	prefix.setEnd(range.endContainer, range.endOffset);
+	const fragment = prefix.cloneContents();
+	return prefix.toString().length + fragment.children.length - 1;
+}
 
 export const setCaret = (pos, parent) => {
 	for (const node of parent.childNodes) {

@@ -4,7 +4,6 @@ import {lexer} from "./Lexer.js";
 
 function main() {
 	CreateEditor(editor);
-	lexer();
 }
 
 main();

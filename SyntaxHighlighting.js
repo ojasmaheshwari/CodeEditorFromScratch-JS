@@ -7,8 +7,8 @@ const ColorMapping = {
 	comments: "gray",
 };
 
-export function cleanLineFeeds(code) {
-	return code.replace(/\n/g, '\\n');
+export function cleanEscapeSequences(code) {
+	return String.raw`${code}`;
 }
 
 function coloredSpan(content, color) {
@@ -47,8 +47,10 @@ export function highlight(element) {
 	element.innerHTML = replaceBy.split('\n').join('<br/>');
 	*/
 
+
 	for (const node of element.children) {
-		const replaceBy = node.innerText
+		const nodeInnerText = cleanEscapeSequences(node.innerText);
+		const replaceBy = nodeInnerText
 			.replace('<', '&lt')
 			.replace('>', '&gt')
 			.replace(RegexRules.doubleQuotationStrings, coloredSpan('"$1"', ColorMapping.doubleQuotationStrings))
