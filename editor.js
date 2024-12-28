@@ -49,13 +49,20 @@ int main( int argc, char* argv[] ) {
 }
 `;
 
-export function getRecentKeyword(editor) {
-	const code = editor.innerText;
-	let pos = getCaretPositionWithNewlines(editor) - 1;
+export function getCodeFromEditor(editor) {
+	let code = "";
+	for (const node of editor.children) {
+		if (node.nodeName === 'DIV' || node.nodeName === 'BR') {
+			code += node.innerText + '\n';
+		}
+	}
 
-	console.log("code: ", code);
-	console.log("code.length: ", code.length);
-	console.log("code[pos]: ", code[pos - 1], "pos: ", pos - 1);
+	return code;
+}
+
+export function getRecentKeyword(editor) {
+	const code = getCodeFromEditor(editor);
+	let pos = getCaretPositionWithNewlines(editor) - 1;
 
 	if (code[pos] === '\n') pos--;
 
@@ -72,8 +79,6 @@ export function getRecentKeyword(editor) {
 	for (let i = pos; i >= 0 && !isSymbol(code[i]) && code[i] !== '\n' && code[i] !== ' ' && code[i] !== '\t'; i--) {
 		word = code[i] + word;
 	}
-
-	console.log("word: ", word);
 
 	return word;
 }

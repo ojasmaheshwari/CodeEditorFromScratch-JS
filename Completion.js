@@ -1,6 +1,6 @@
 import {lexer, getKeywordsFromLexemes, isSymbol, keywords} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
-import {getRecentKeyword} from "./editor.js";
+import {getCodeFromEditor, getRecentKeyword} from "./editor.js";
 import {getCaretGlobalCoordinates, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
 import {editor, suggestionContainer} from "./DOMElements.js";
 import {insertCodeIntoEditor} from "./editor.js";
@@ -9,8 +9,7 @@ import {highlight} from "./SyntaxHighlighting.js";
 let gCaretPos = 0;
 
 function triggerKeywordReplace(replaceBy, pos) {
-	console.log("triggered keyword replace");
-	const code = editor.innerText;
+	const code = getCodeFromEditor(editor);
 
 	if (code[pos] === '\n') pos--;
 
@@ -26,6 +25,7 @@ function triggerKeywordReplace(replaceBy, pos) {
 	suggestionContainer.innerHTML = "";
 	highlight(editor);
 
+	console.log(keywordStartIdx);
 	setCaret(keywordStartIdx + replaceBy.length, editor);
 }
 
@@ -43,12 +43,10 @@ export function Completion(editor) {
 	const userTypedWord = getRecentKeyword(editor);
 	suggestionContainer.innerHTML = "";
 	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') return;
-	console.log(userTypedWord);
 
-	const lexemes = lexer(editor.innerText);
+	const lexemes = lexer(getCodeFromEditor(editor));
 	const keywords = getKeywordsFromLexemes(lexemes);
 	const scoresData = fuzzySearch(keywords, userTypedWord);
-	console.log(scoresData);
 
 	const caretCoords = getCaretGlobalCoordinates();
 	const caretX = caretCoords.x, caretY = caretCoords.y;

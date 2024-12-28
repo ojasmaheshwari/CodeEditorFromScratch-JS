@@ -50,7 +50,8 @@ body {
 	background-color: black;
 	display: flex;
 	flex-direction: column;
-	overflow: auto;
+	overflow-y: auto;
+	border-radius: 5px;
 }
 
 .suggestion {
