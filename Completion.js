@@ -1,13 +1,15 @@
-import {lexer, getKeywordsFromLexemes, isSymbol} from "./Lexer.js";
+import {lexer, getKeywordsFromLexemes, isSymbol, keywords} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
 import {getRecentKeyword} from "./editor.js";
-import {getCaretGlobalCoordinates, getCaretPositionWithNewlines} from "./Caret.js";
+import {getCaretGlobalCoordinates, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
 import {editor, suggestionContainer} from "./DOMElements.js";
+import {insertCodeIntoEditor} from "./editor.js";
+import {highlight} from "./SyntaxHighlighting.js";
 
-function triggerKeywordReplace(replaceBy) {
-	const pos = getCaretPositionWithNewlines(editor) - 1;
+let gCaretPos = 0;
 
-	console.log("pos: ", pos);
+function triggerKeywordReplace(replaceBy, pos) {
+	console.log("triggered keyword replace");
 	const code = editor.innerText;
 
 	if (code[pos] === '\n') pos--;
@@ -17,32 +19,43 @@ function triggerKeywordReplace(replaceBy) {
 	for (keywordStartIdx = pos; keywordStartIdx >= 0 && !isSymbol(code[keywordStartIdx]) && code[keywordStartIdx] !== ' ' && code[keywordStartIdx] !== '\n' && code[keywordStartIdx] !== '\t'; keywordStartIdx--);
 	for (keywordEndIdx = pos; keywordEndIdx < code.length && !isSymbol(code[keywordEndIdx]) && code[keywordEndIdx] !== ' ' && code[keywordEndIdx] !== '\n' && code[keywordEndIdx] !== '\t'; keywordEndIdx++);
 
-	console.log(keywordStartIdx, keywordEndIdx);
-	console.log(code.slice(keywordStartIdx, keywordEndIdx + 1));
+	const newCode = code.slice(0, keywordStartIdx + 1) + replaceBy + code.slice(keywordEndIdx, code.length);
+	editor.innerHTML = "";
+	insertCodeIntoEditor(editor, newCode);
+	// TODO: Don't really like this, should switch to toggalable suggestionContainer later
+	suggestionContainer.innerHTML = "";
+	highlight(editor);
+
+	setCaret(keywordStartIdx + replaceBy.length, editor);
 }
 
 function handleSuggestionPress(e) {
-	triggerKeywordReplace(e.target.innerText);
+	triggerKeywordReplace(e.target.innerText, gCaretPos);
+	e.preventDefault();
+	e.stopPropagation();
+}
+
+export function SuggestionEngineInit() {
+	suggestionContainer.addEventListener("click", (e) => {handleSuggestionPress(e)});
 }
 
 export function Completion(editor) {
+	const userTypedWord = getRecentKeyword(editor);
+	suggestionContainer.innerHTML = "";
+	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') return;
+	console.log(userTypedWord);
+
 	const lexemes = lexer(editor.innerText);
 	const keywords = getKeywordsFromLexemes(lexemes);
-	const userTypedWord = getRecentKeyword(editor);
+	console.log(keywords);
 	const scoresData = fuzzySearch(keywords, userTypedWord);
 
 	const caretCoords = getCaretGlobalCoordinates();
 	const caretX = caretCoords.x, caretY = caretCoords.y;
-
-	suggestionContainer.innerHTML = "";
 	suggestionContainer.style.left = `${caretX}px`;
 	suggestionContainer.style.top = `${caretY + 20}px`;
 
-	if (userTypedWord === '') return;
-
-	suggestionContainer.addEventListener("click", handleSuggestionPress);
-
-	console.log(scoresData);
+	gCaretPos = getCaretPositionWithNewlines(editor);
 
 	for (let i = 0; i < scoresData.length; i++) {
 		const data = scoresData[i];

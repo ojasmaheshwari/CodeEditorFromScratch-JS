@@ -16,6 +16,10 @@ export function getCaretPositionWithNewlines(element) {
 	prefix.selectNodeContents(element);
 	prefix.setEnd(range.endContainer, range.endOffset);
 	const fragment = prefix.cloneContents();
+	console.log("prefix.toString(): ", prefix.toString());
+	console.log("prefix.toString().length: ", prefix.toString().length);
+	console.log("fragment: ", fragment);
+	console.log("fragment.children.length: ", fragment.children.length);
 	return prefix.toString().length + fragment.children.length - 1;
 }
 

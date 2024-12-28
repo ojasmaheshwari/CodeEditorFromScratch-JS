@@ -92,6 +92,8 @@ export function lexer(input) {
 				currentToken += char;
 			}
 		}
+		if (currentToken !== "") lexemes.push(lexeme(currentToken, "keyword"));
+		currentToken = "";
 		lexemes.push(lexeme('\n', "newline"));
 	}
 

@@ -2,7 +2,7 @@ import {highlight} from "./SyntaxHighlighting.js";
 import {getCaretPosition, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
 import {getKeywordsFromLexemes, isSymbol, lexer} from "./Lexer.js";
 import {fuzzySearch, getEditDistance} from "./FuzzySearch.js";
-import {Completion} from "./Completion.js";
+import {Completion, SuggestionEngineInit} from "./Completion.js";
 
 const placeholderCode = `
 #include <cassert>
@@ -53,9 +53,17 @@ export function getRecentKeyword(editor) {
 	const code = editor.innerText;
 	let pos = getCaretPositionWithNewlines(editor) - 1;
 
+	console.log("code: ", code);
+	console.log("code.length: ", code.length);
+	console.log("code[pos]: ", code[pos - 1], "pos: ", pos - 1);
+
 	if (code[pos] === '\n') pos--;
-	if (!code[pos]) return;
-	if (code[pos] === ' ') return '';
+
+	// TODO: A hacky fix but works and not too slow tbh, might fix later
+	while (!code[pos] && pos >= 0) {
+		pos--;
+	}
+	if (code[pos] === ' ' || pos == 0) return '';
 
 	let word = "";
 	for (let i = pos + 1; i < code.length && !isSymbol(code[i]) && code[i] !== '\n' && code[i] !== ' ' && code[i] !== '\t'; i++) {
@@ -64,6 +72,8 @@ export function getRecentKeyword(editor) {
 	for (let i = pos; i >= 0 && !isSymbol(code[i]) && code[i] !== '\n' && code[i] !== ' ' && code[i] !== '\t'; i--) {
 		word = code[i] + word;
 	}
+
+	console.log("word: ", word);
 
 	return word;
 }
@@ -94,13 +104,19 @@ function handleKeyPresses(editor) {
 	});
 }
 
-export function CreateEditor(editor, defaultCode = placeholderCode) {
-	editor.innerText = "";
-	const placeholderCodeLines = defaultCode.split('\n');
+export function insertCodeIntoEditor(editor, code) {
+	const placeholderCodeLines = code.split('\n');
 	for (const line of placeholderCodeLines) {
 		editor.innerHTML += "<div>" + line.replace('<', '&lt').replace('>', '&gt').replace('\t', '    ') + "</div>";
-	}
 
+	}
+}
+
+export function CreateEditor(editor, defaultCode = placeholderCode) {
+	editor.innerText = "";
+	insertCodeIntoEditor(editor, defaultCode);
+
+	SuggestionEngineInit();
 	handleTabs(editor);
 	handleKeyPresses(editor);
 }
