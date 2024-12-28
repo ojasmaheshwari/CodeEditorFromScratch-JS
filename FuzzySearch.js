@@ -33,7 +33,8 @@ export function fuzzySearch(searchTerms, target) {
 	const keywordScores = [];
 	for (const searchTerm of searchTerms) {
 		const score = getEditDistance(target, searchTerm);
-		keywordScores.push({token: searchTerm, score: score});
+		const scorePercent = (score / Math.max(searchTerm.length, target.length));
+		keywordScores.push({token: searchTerm, score: scorePercent});
 	}
 
 	function compare(scoreObject_1, scoreObject_2) {

@@ -47,8 +47,8 @@ export function Completion(editor) {
 
 	const lexemes = lexer(editor.innerText);
 	const keywords = getKeywordsFromLexemes(lexemes);
-	console.log(keywords);
 	const scoresData = fuzzySearch(keywords, userTypedWord);
+	console.log(scoresData);
 
 	const caretCoords = getCaretGlobalCoordinates();
 	const caretX = caretCoords.x, caretY = caretCoords.y;
