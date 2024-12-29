@@ -3,6 +3,7 @@ import {getCaretPosition, getCaretPositionWithNewlines, setCaret} from "./Caret.
 import {getKeywordsFromLexemes, isSymbol, lexer} from "./Lexer.js";
 import {fuzzySearch, getEditDistance} from "./FuzzySearch.js";
 import {Completion, SuggestionEngineInit} from "./Completion.js";
+import {suggestionContainer} from "./DOMElements.js";
 
 const placeholderCode = `
 #include <cassert>
@@ -86,13 +87,17 @@ export function getRecentKeyword(editor) {
 function handleTabs(editor) {
 	editor.addEventListener("keydown", (e) => {
 		if (e.which === 9) {
-			const pos = getCaretPosition(editor) + 4;
-			const range = window.getSelection().getRangeAt(0);
-			range.deleteContents();
-			range.insertNode(document.createTextNode("    "));
-			highlight(editor);
-			setCaret(pos, editor);
-			e.preventDefault();
+			if (suggestionContainer.dataset.active === "true") {
+
+			} else {
+				const pos = getCaretPosition(editor) + 4;
+				const range = window.getSelection().getRangeAt(0);
+				range.deleteContents();
+				range.insertNode(document.createTextNode("    "));
+				highlight(editor);
+				setCaret(pos, editor);
+				e.preventDefault();
+			}
 		}
 	});
 }

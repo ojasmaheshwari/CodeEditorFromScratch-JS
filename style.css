@@ -67,3 +67,11 @@ body {
 	background-color: gray;
 	cursor: pointer;
 }
+
+.suggestion:focus {
+	background-color: gray;
+}
+
+.first-dummy-suggestion, .last-dummy-suggestion {
+	opacity: 0;
+}
