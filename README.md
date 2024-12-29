@@ -1,9 +1,10 @@
 A Code Editor with syntax highlighting from Scratch made in HTML, CSS and Javascript
-Note: This project is not intended for production and thus may have unexpected behaviors. See section 'Known Bugs'
 
 ![Screenshot_2024-12-29_23-47-10](https://github.com/user-attachments/assets/d4971338-d930-467a-b3d2-4769065dbf40)
 
 ## Live version [here](https://code-editor-from-scratch.netlify.app/)
+
+Note: This project is not intended for production and thus may have unexpected behaviors. See section 'Known Bugs'
 
 ## Working Details
 - Uses Range and Selection API in Javascript to manage position of cursor/caret inside editor.
