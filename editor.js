@@ -196,7 +196,7 @@ function handleTabs(editor) {
 function handleKeyPresses(editor) {
 	highlight(editor);
 	editor.addEventListener("keyup", (e) => {
-		if (e.keyCode >= 0x30 || e.keyCode == 0x20 || e.keyCode == 8) {
+		if ((e.keyCode >= 0x30 || e.keyCode == 0x20 || e.keyCode == 8) && !e.ctrlKey) {
 			const pos = getCaretPosition(editor);
 			highlight(editor);
 			setCaret(pos, editor);
