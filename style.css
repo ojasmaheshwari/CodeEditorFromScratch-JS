@@ -33,17 +33,17 @@ body {
 	overflow-x: hidden;
 }
 
-.editor::-webkit-scrollbar {
+.editor::-webkit-scrollbar, #suggestion-container::-webkit-scrollbar {
 	width: 7px;
 }
         
-.editor::-webkit-scrollbar-track {
+.editor::-webkit-scrollbar-track, #suggestion-container::-webkit-scrollbar-track {
 	border-radius: 8px;
 	background-color: #e7e7e7;
 	border: 1px solid #cacaca;
 }
 
-.editor::-webkit-scrollbar-thumb {
+.editor::-webkit-scrollbar-thumb, #suggestion-container::-webkit-scrollbar-thumb {
 	border-radius: 8px;
 	background-color: var(--col-scrollbar);
 }
