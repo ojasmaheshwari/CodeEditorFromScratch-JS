@@ -1,6 +1,6 @@
 import {lexer, getKeywordsFromLexemes, isSymbol, keywords} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
-import {getCodeFromEditor, getRecentKeyword} from "./editor.js";
+import {getCodeFromEditor, getRecentKeyword_modern} from "./editor.js";
 import {getCaretGlobalCoordinates, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
 import {editor, suggestionContainer} from "./DOMElements.js";
 import {insertCodeIntoEditor} from "./editor.js";
@@ -51,7 +51,8 @@ export function SuggestionEngineInit() {
 }
 
 export function Completion(editor) {
-	const userTypedWord = getRecentKeyword(editor);
+	getRecentKeyword_modern(editor);
+	const userTypedWord = getRecentKeyword_modern(editor);
 	suggestionContainer.innerHTML = "";
 	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') {
 		suggestionContainer.dataset.active = "false";
