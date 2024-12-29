@@ -1,6 +1,6 @@
 // HAHA YOU FOUND THE EASTER EGG
 // Since One Punch Man S3 is gonna release soon, HERES THE SURPRISEE
-// NOW HIT "CTRL + OP" to activate ONE PUNCH MODE!
+// NOW HIT "CTRL + shift + o" to activate ONE PUNCH MODE!
 
 import {suggestionContainer} from "./DOMElements.js";
 import {OPMModeSettings} from "./Globals.js";
