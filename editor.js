@@ -61,6 +61,57 @@ export function getCodeFromEditor(editor) {
 	return code;
 }
 
+export function getRecentKeywordRange() {
+	const currCaretRange = window.getSelection().getRangeAt(0).cloneRange();
+	if (currCaretRange.endOffset == 0 || currCaretRange.startOffset == 0) {
+		currCaretRange.setStart(currCaretRange.endContainer, 0);
+		currCaretRange.setEnd(currCaretRange.endContainer, 1);
+	}
+	else {
+		currCaretRange.setStart(currCaretRange.endContainer, currCaretRange.endOffset - 1);
+		currCaretRange.setEnd(currCaretRange.endContainer, currCaretRange.endOffset);
+	}
+	let tempRange = currCaretRange.cloneRange();
+	let word = ""
+	let char = tempRange.toString();
+
+	while (!(['\n', ' ', '\t', '\r'].includes(char)) && !isSymbol(char) && tempRange.startOffset > 0 && tempRange.endOffset > 0) {
+		word = char + word;
+		tempRange.setStart(tempRange.startContainer, tempRange.startOffset - 1);
+		tempRange.setEnd(tempRange.endContainer, tempRange.endOffset - 1);
+		char = tempRange.toString();
+	}
+
+	const tempRangeStart = {
+		container: tempRange.startContainer,
+		offset: tempRange.startOffset,
+	};
+
+	tempRange = currCaretRange.cloneRange();
+	if (tempRange.startOffset < tempRange.startContainer.length && tempRange.endOffset < tempRange.endContainer.length) {
+		tempRange.setStart(tempRange.startContainer, tempRange.startOffset + 1);
+		tempRange.setEnd(tempRange.endContainer, tempRange.endOffset + 1);
+	}
+	char = tempRange.toString();
+
+	while (!(['\n', ' ', '\t', '\r'].includes(char)) && !isSymbol(char) && tempRange.startOffset < tempRange.startContainer.length && tempRange.endOffset < tempRange.endContainer.length) {
+		tempRange.setStart(tempRange.startContainer, tempRange.startOffset + 1);
+		tempRange.setEnd(tempRange.endContainer, tempRange.endOffset + 1);
+		char = tempRange.toString();
+	}
+
+	const tempRangeEnd = {
+		container: tempRange.endContainer,
+		offset: tempRange.endOffset,
+	};
+
+	const ret = new Range();
+	ret.setStart(tempRangeStart.container, tempRangeStart.offset + 1);
+	ret.setEnd(tempRangeEnd.container, tempRangeEnd.offset);
+
+	return ret;
+}
+
 export function getRecentKeyword_modern(editor) {
 	const currCaretRange = window.getSelection().getRangeAt(0).cloneRange();
 	if (currCaretRange.endOffset == 0 || currCaretRange.startOffset == 0) {

@@ -1,13 +1,31 @@
 import {lexer, getKeywordsFromLexemes, isSymbol, keywords} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
-import {getCodeFromEditor, getRecentKeyword_modern} from "./editor.js";
-import {getCaretGlobalCoordinates, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
+import {getCodeFromEditor, getRecentKeyword_modern, getRecentKeywordRange} from "./editor.js";
+import {getCaretGlobalCoordinates, getCaretPosition, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
 import {editor, suggestionContainer} from "./DOMElements.js";
 import {insertCodeIntoEditor} from "./editor.js";
 import {highlight} from "./SyntaxHighlighting.js";
 import {SuggestionNavigationProps} from "./SuggestionNavigation.js";
 
 let gCaretPos = 0;
+
+function triggerKeywordReplace_modern(replaceBy, pos) {
+	const sel = window.getSelection();
+	setCaret(pos, editor);
+	const toReplaceKeywordRange = getRecentKeywordRange();
+	toReplaceKeywordRange.deleteContents();
+	toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
+	sel.addRange(toReplaceKeywordRange);
+
+	const updatedCaret = document.createRange();
+	updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
+	updatedCaret.collapse();
+	sel.removeAllRanges();
+	sel.addRange(updatedCaret);
+
+	suggestionContainer.innerHTML = "";
+	suggestionContainer.dataset.active = "false";
+}
 
 function triggerKeywordReplace(replaceBy, pos) {
 	const code = getCodeFromEditor(editor);
@@ -31,7 +49,8 @@ function triggerKeywordReplace(replaceBy, pos) {
 }
 
 function handleSuggestionPress(e) {
-	triggerKeywordReplace(e.target.innerText, gCaretPos);
+	// triggerKeywordReplace(e.target.innerText, gCaretPos);
+	triggerKeywordReplace_modern(e.target.innerText, gCaretPos);
 	e.preventDefault();
 	e.stopPropagation();
 }
@@ -69,7 +88,7 @@ export function Completion(editor) {
 	suggestionContainer.style.top = `${caretY + 20}px`;
 	suggestionContainer.dataset.active = "true";
 
-	gCaretPos = getCaretPositionWithNewlines(editor);
+	gCaretPos = getCaretPosition(editor);
 
 	const firstDummyChoice = document.createElement('button');
 	firstDummyChoice.classList.add('first-dummy-suggestion');
