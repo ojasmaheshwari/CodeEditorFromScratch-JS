@@ -1,10 +1,9 @@
 import {highlight} from "./SyntaxHighlighting.js";
-import {getCaretPosition, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
-import {getKeywordsFromLexemes, isSymbol, lexer} from "./Lexer.js";
-import {fuzzySearch, getEditDistance} from "./FuzzySearch.js";
+import {getCaretPosition, setCaret} from "./Caret.js";
+import {isSymbol} from "./Lexer.js";
 import {Completion, SuggestionEngineInit} from "./Completion.js";
 import {suggestionContainer} from "./DOMElements.js";
-import {OnePunchhhhhhhhhhhhh} from "./EasterEgg.js";
+import {OnePunchhhhhhhhhhhhh} from "./VeryImportantFileDoNotTouchPleaseContainsSecretToUniverse.js";
 
 const placeholderCode = `
 #include <cassert>
@@ -113,7 +112,7 @@ export function getRecentKeywordRange() {
 	return ret;
 }
 
-export function getRecentKeyword_modern(editor) {
+export function getRecentKeyword_modern() {
 	const currCaretRange = window.getSelection().getRangeAt(0).cloneRange();
 	if (currCaretRange.endOffset == 0 || currCaretRange.startOffset == 0) {
 		currCaretRange.setStart(currCaretRange.endContainer, 0);
@@ -151,7 +150,6 @@ export function getRecentKeyword_modern(editor) {
 	return word;
 }
 
-/*
 export function getRecentKeyword(editor) {
 	const code = getCodeFromEditor(editor);
 	let pos = getCaretPositionWithNewlines(editor) - 1;
@@ -174,7 +172,6 @@ export function getRecentKeyword(editor) {
 
 	return word;
 }
-*/
 
 function handleTabs(editor) {
 	editor.addEventListener("keydown", (e) => {
@@ -194,10 +191,8 @@ function handleTabs(editor) {
 		}
 		else if (e.ctrlKey && e.key === "O") {
 			e.preventDefault();
-			console.log("Hey")
 			OnePunchhhhhhhhhhhhh(editor);
 		}
-		console.log(e);
 	});
 }
 
@@ -206,7 +201,6 @@ function handleKeyPresses(editor) {
 	editor.addEventListener("keyup", (e) => {
 		e.preventDefault();
 		if (e.key === "Escape") {
-			console.log("lol");
 			suggestionContainer.innerHTML = "";
 			suggestionContainer.dataset.active = "false";
 		}

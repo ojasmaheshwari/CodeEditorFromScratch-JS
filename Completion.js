@@ -71,7 +71,7 @@ export function SuggestionEngineInit() {
 }
 
 export function Completion(editor) {
-	getRecentKeyword_modern(editor);
+	getRecentKeyword_modern();
 	const userTypedWord = getRecentKeyword_modern(editor);
 	suggestionContainer.innerHTML = "";
 	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') {
