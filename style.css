@@ -8,6 +8,7 @@
 
 :root {
 	--col-primary: #1e1e1e;
+	--col-scrollbar: #569cd6;
 }
 
 body {
@@ -26,9 +27,25 @@ body {
 	border-radius: 1rem;
 	color: white;
 	outline: none;
-	overflow: scroll;
+	overflow-y: scroll;
 	counter-reset: line;
 	opacity: 1;
+	overflow-x: hidden;
+}
+
+.editor::-webkit-scrollbar {
+	width: 7px;
+}
+        
+.editor::-webkit-scrollbar-track {
+	border-radius: 8px;
+	background-color: #e7e7e7;
+	border: 1px solid #cacaca;
+}
+
+.editor::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	background-color: var(--col-scrollbar);
 }
 
 .editor div {

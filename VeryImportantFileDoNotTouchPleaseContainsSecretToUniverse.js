@@ -11,4 +11,9 @@ export function OnePunchhhhhhhhhhhhh(editor) {
 	editor.classList.toggle("opm-editor");
 	suggestionContainer.classList.toggle("opm-suggestion-container");
 	OPMModeSettings.active = true;
+	const color = document.documentElement.style.getPropertyValue('--col-scrollbar');
+	if (color !== '#d55959')
+		document.documentElement.style.setProperty('--col-scrollbar', '#d55959');
+	else
+		document.documentElement.style.setProperty('--col-scrollbar', '#569cd6');
 }
