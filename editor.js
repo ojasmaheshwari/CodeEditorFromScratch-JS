@@ -4,6 +4,7 @@ import {getKeywordsFromLexemes, isSymbol, lexer} from "./Lexer.js";
 import {fuzzySearch, getEditDistance} from "./FuzzySearch.js";
 import {Completion, SuggestionEngineInit} from "./Completion.js";
 import {suggestionContainer} from "./DOMElements.js";
+import {OnePunchhhhhhhhhhhhh} from "./EasterEgg.js";
 
 const placeholderCode = `
 #include <cassert>
@@ -179,8 +180,9 @@ function handleTabs(editor) {
 	editor.addEventListener("keydown", (e) => {
 		if (e.which === 9) {
 			if (suggestionContainer.dataset.active === "true") {
-
-			} else {
+				// TODO??
+			}
+			else {
 				const pos = getCaretPosition(editor) + 4;
 				const range = window.getSelection().getRangeAt(0);
 				range.deleteContents();
@@ -190,13 +192,25 @@ function handleTabs(editor) {
 				e.preventDefault();
 			}
 		}
+		else if (e.ctrlKey && e.key === "O") {
+			e.preventDefault();
+			console.log("Hey")
+			OnePunchhhhhhhhhhhhh(editor);
+		}
+		console.log(e);
 	});
 }
 
 function handleKeyPresses(editor) {
 	highlight(editor);
 	editor.addEventListener("keyup", (e) => {
-		if ((e.keyCode >= 0x30 || e.keyCode == 0x20 || e.keyCode == 8) && !e.ctrlKey) {
+		e.preventDefault();
+		if (e.key === "Escape") {
+			console.log("lol");
+			suggestionContainer.innerHTML = "";
+			suggestionContainer.dataset.active = "false";
+		}
+		else if (e.keyCode >= 0x30 || e.keyCode == 0x20 || e.keyCode == 8) {
 			const pos = getCaretPosition(editor);
 			highlight(editor);
 			setCaret(pos, editor);

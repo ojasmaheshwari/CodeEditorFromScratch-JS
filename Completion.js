@@ -1,11 +1,12 @@
-import {lexer, getKeywordsFromLexemes, isSymbol, keywords} from "./Lexer.js";
+import {lexer, getKeywordsFromLexemes, isSymbol} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
 import {getCodeFromEditor, getRecentKeyword_modern, getRecentKeywordRange} from "./editor.js";
-import {getCaretGlobalCoordinates, getCaretPosition, getCaretPositionWithNewlines, setCaret} from "./Caret.js";
+import {getCaretGlobalCoordinates, getCaretPosition, setCaret} from "./Caret.js";
 import {editor, suggestionContainer} from "./DOMElements.js";
 import {insertCodeIntoEditor} from "./editor.js";
 import {highlight} from "./SyntaxHighlighting.js";
 import {SuggestionNavigationProps} from "./SuggestionNavigation.js";
+import {OPMModeSettings} from "./Globals.js";
 
 let gCaretPos = 0;
 
@@ -99,6 +100,7 @@ export function Completion(editor) {
 
 		const suggestion = document.createElement('button');
 		suggestion.classList.add('suggestion');
+		if (OPMModeSettings.active) suggestion.classList.add('opm-suggestion');
 		suggestion.innerText = data.token;
 		suggestionContainer.appendChild(suggestion);
 		document.body.appendChild(suggestionContainer);
