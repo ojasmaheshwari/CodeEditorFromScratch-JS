@@ -204,10 +204,17 @@ function handleKeyPresses(editor) {
 			suggestionContainer.innerHTML = "";
 			suggestionContainer.dataset.active = "false";
 		}
-		else if (e.keyCode >= 0x30 || e.keyCode == 0x20 || e.keyCode == 8) {
+		else if (e.keyCode >= 0x30 || e.keyCode == 0x20) {
 			const pos = getCaretPosition(editor);
 			highlight(editor);
 			setCaret(pos, editor);
+			Completion(editor);
+		}
+	});
+
+	editor.addEventListener("keydown", (e) => {
+		if (e.key === "Backspace" && window.getSelection().getRangeAt(0).startOffset === 0) {
+			highlight(editor);
 			Completion(editor);
 		}
 	});
