@@ -64,54 +64,23 @@ export function getCodeFromEditor(editor) {
 }
 
 export function getRecentKeywordRange() {
-	const currCaretRange = window.getSelection().getRangeAt(0).cloneRange();
-	if (currCaretRange.endOffset == 0 || currCaretRange.startOffset == 0) {
-		currCaretRange.setStart(currCaretRange.endContainer, 0);
-		currCaretRange.setEnd(currCaretRange.endContainer, 1);
-	}
-	else {
-		currCaretRange.setStart(currCaretRange.endContainer, currCaretRange.endOffset - 1);
-		currCaretRange.setEnd(currCaretRange.endContainer, currCaretRange.endOffset);
-	}
-	let tempRange = currCaretRange.cloneRange();
-	let word = ""
-	let char = tempRange.toString();
+    const sel = window.getSelection();
+    const range = sel.getRangeAt(0);
+    const textNode = range.startContainer;
+    const textContent = textNode.textContent;
 
-	while (!(['\n', ' ', '\t', '\r'].includes(char)) && !isSymbol(char) && tempRange.startOffset > 0 && tempRange.endOffset > 0) {
-		word = char + word;
-		tempRange.setStart(tempRange.startContainer, tempRange.startOffset - 1);
-		tempRange.setEnd(tempRange.endContainer, tempRange.endOffset - 1);
-		char = tempRange.toString();
-	}
+    // Find the start and end of the word using regex
+    const wordStart = textContent.slice(0, range.startOffset).search(/\b\w+$/);
+    const wordEnd = textContent.slice(range.startOffset).search(/\W/);
+    const start = wordStart === -1 ? 0 : wordStart;
+    const end = wordEnd === -1 ? textContent.length : range.startOffset + wordEnd;
 
-	const tempRangeStart = {
-		container: tempRange.startContainer,
-		offset: tempRange.startOffset,
-	};
+    // Create a new range for the full word
+    const toReplaceKeywordRange = document.createRange();
+    toReplaceKeywordRange.setStart(textNode, start);
+    toReplaceKeywordRange.setEnd(textNode, end);
 
-	tempRange = currCaretRange.cloneRange();
-	if (tempRange.startOffset < tempRange.startContainer.length && tempRange.endOffset < tempRange.endContainer.length) {
-		tempRange.setStart(tempRange.startContainer, tempRange.startOffset + 1);
-		tempRange.setEnd(tempRange.endContainer, tempRange.endOffset + 1);
-	}
-	char = tempRange.toString();
-
-	while (!(['\n', ' ', '\t', '\r'].includes(char)) && !isSymbol(char) && tempRange.startOffset < tempRange.startContainer.length && tempRange.endOffset < tempRange.endContainer.length) {
-		tempRange.setStart(tempRange.startContainer, tempRange.startOffset + 1);
-		tempRange.setEnd(tempRange.endContainer, tempRange.endOffset + 1);
-		char = tempRange.toString();
-	}
-
-	const tempRangeEnd = {
-		container: tempRange.endContainer,
-		offset: tempRange.endOffset,
-	};
-
-	const ret = new Range();
-	ret.setStart(tempRangeStart.container, tempRangeStart.offset + 1);
-	ret.setEnd(tempRangeEnd.container, tempRangeEnd.offset);
-
-	return ret;
+    return toReplaceKeywordRange;
 }
 
 export function getRecentKeyword() {

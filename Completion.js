@@ -9,21 +9,23 @@ import {OPMModeSettings} from "./Globals.js";
 let gCaretPos = 0;
 
 function triggerKeywordReplace(replaceBy, pos) {
-	const sel = window.getSelection();
-	setCaret(pos, editor);
-	const toReplaceKeywordRange = getRecentKeywordRange();
-	toReplaceKeywordRange.deleteContents();
-	toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
-	sel.addRange(toReplaceKeywordRange);
+    const sel = window.getSelection();
+    setCaret(pos, editor);
+    const toReplaceKeywordRange = getRecentKeywordRange();
 
-	const updatedCaret = document.createRange();
-	updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
-	updatedCaret.collapse();
-	sel.removeAllRanges();
-	sel.addRange(updatedCaret);
+    // Replace the full word with the suggestion
+    toReplaceKeywordRange.deleteContents();
+    toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
 
-	suggestionContainer.innerHTML = "";
-	suggestionContainer.dataset.active = "false";
+    // Update the caret position to the end of the inserted suggestion
+    const updatedCaret = document.createRange();
+    updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
+    updatedCaret.collapse();
+    sel.removeAllRanges();
+    sel.addRange(updatedCaret);
+
+    suggestionContainer.innerHTML = "";
+    suggestionContainer.dataset.active = "false";
 }
 
 /*
