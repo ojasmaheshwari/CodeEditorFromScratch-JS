@@ -4,6 +4,8 @@ import {isSymbol} from "./Lexer.js";
 import {Completion, SuggestionEngineInit} from "./Completion.js";
 import {suggestionContainer} from "./DOMElements.js";
 import {OnePunchhhhhhhhhhhhh} from "./VeryImportantFileDoNotTouchPleaseContainsSecretToUniverse.js";
+import {g} from "./Globals.js";
+import {debounce} from "./Utility.js";
 
 const placeholderCode = `
 #include <cassert>
@@ -198,6 +200,7 @@ function handleTabs(editor) {
 	});
 }
 
+
 function handleKeyPresses(editor) {
 	highlight(editor);
 	editor.addEventListener("keyup", (e) => {
@@ -210,7 +213,7 @@ function handleKeyPresses(editor) {
 			const pos = getCaretPosition(editor);
 			highlight(editor);
 			setCaret(pos, editor);
-			Completion(editor);
+			debounce(() => Completion(editor), g.completionDebounceInterval)();
 		}
 	});
 
