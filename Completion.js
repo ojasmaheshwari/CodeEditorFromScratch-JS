@@ -12,15 +12,19 @@ function triggerKeywordReplace(replaceBy, pos) {
 	const sel = window.getSelection();
 	setCaret(pos, editor);
 	const toReplaceKeywordRange = getRecentKeywordRange();
-	toReplaceKeywordRange.deleteContents();
-	toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
-	sel.addRange(toReplaceKeywordRange);
+	const currentText = toReplaceKeywordRange.toString();
+	if (currentText) {
+		toReplaceKeywordRange.setStart(toReplaceKeywordRange.startContainer, toReplaceKeywordRange.startOffset - 1);
+		toReplaceKeywordRange.deleteContents();
+		toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
+		sel.addRange(toReplaceKeywordRange);
 
-	const updatedCaret = document.createRange();
-	updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
-	updatedCaret.collapse();
-	sel.removeAllRanges();
-	sel.addRange(updatedCaret);
+		const updatedCaret = document.createRange();
+		updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
+		updatedCaret.collapse();
+		sel.removeAllRanges();
+		sel.addRange(updatedCaret);
+	}
 
 	suggestionContainer.innerHTML = "";
 	suggestionContainer.dataset.active = "false";
@@ -81,18 +85,37 @@ export function SuggestionEngineInit() {
 	suggestionContainer.addEventListener("keydown", (e) => {handleSuggestionKeyEvents(e)})
 }
 
+
+let completionTimeout = null;
+
 export function Completion(editor) {
-	const userTypedWord = getRecentKeyword(editor);
-	suggestionContainer.innerHTML = "";
-	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') {
-		suggestionContainer.dataset.active = "false";
-		return;
+	if (completionTimeout) {
+		clearTimeout(completionTimeout);
 	}
+	
+	completionTimeout = setTimeout(() => {
+		const userTypedWord = getRecentKeyword(editor);
+		if (!userTypedWord || /^[\s\n\t]$/.test(userTypedWord)) {
+			suggestionContainer.dataset.active = "false";
+			suggestionContainer.innerHTML = "";
+			return;
+		}
+		gCaretPos = getCaretPosition(editor);
+		const lexemes = lexer(getCodeFromEditor(editor));
+		const keywords = getKeywordsFromLexemes(lexemes);
+		const scoresData = fuzzySearch(keywords, userTypedWord);
+		
+		if (scoresData.length === 0) {
+			suggestionContainer.dataset.active = "false";
+			suggestionContainer.innerHTML = "";
+			return;
+		}
 
-	const lexemes = lexer(getCodeFromEditor(editor));
-	const keywords = getKeywordsFromLexemes(lexemes);
-	const scoresData = fuzzySearch(keywords, userTypedWord);
+		updateSuggestionUI(scoresData);
+	}, 150); 
+}
 
+function updateSuggestionUI(scoresData) {
 	const caretCoords = getCaretGlobalCoordinates();
 	const caretX = caretCoords.x, caretY = caretCoords.y;
 	suggestionContainer.style.left = `${caretX}px`;
@@ -107,7 +130,6 @@ export function Completion(editor) {
 
 	for (let i = 0; i < scoresData.length; i++) {
 		const data = scoresData[i];
-
 		const suggestion = document.createElement('button');
 		suggestion.classList.add('suggestion');
 		if (OPMModeSettings.active) suggestion.classList.add('opm-suggestion');
@@ -115,12 +137,11 @@ export function Completion(editor) {
 		suggestionContainer.appendChild(suggestion);
 		document.body.appendChild(suggestionContainer);
 	}
-
 	SuggestionNavigationProps.currentSuggestionIndex = 0;
 	SuggestionNavigationProps.firstSuggestionIndex = 0;
 	SuggestionNavigationProps.lastSuggestionIndex = keywords.length - 1;
 
 	const lastDummyChoice = document.createElement('button');
 	lastDummyChoice.classList.add('last-dummy-suggestion');
-	suggestionContainer.appendChild(lastDummyChoice);
+	suggestionContainer.appendChild(lastDummyChoice);	
 }
