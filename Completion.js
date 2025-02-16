@@ -1,16 +1,14 @@
 import {lexer, getKeywordsFromLexemes, isSymbol} from "./Lexer.js";
 import {fuzzySearch} from "./FuzzySearch.js";
-import {getCodeFromEditor, getRecentKeyword_modern, getRecentKeywordRange} from "./editor.js";
+import {getCodeFromEditor, getRecentKeyword, getRecentKeywordRange} from "./editor.js";
 import {getCaretGlobalCoordinates, getCaretPosition, setCaret} from "./Caret.js";
 import {editor, suggestionContainer} from "./DOMElements.js";
-import {insertCodeIntoEditor} from "./editor.js";
-import {highlight} from "./SyntaxHighlighting.js";
 import {SuggestionNavigationProps} from "./SuggestionNavigation.js";
 import {OPMModeSettings} from "./Globals.js";
 
 let gCaretPos = 0;
 
-function triggerKeywordReplace_modern(replaceBy, pos) {
+function triggerKeywordReplace(replaceBy, pos) {
 	const sel = window.getSelection();
 	setCaret(pos, editor);
 	const toReplaceKeywordRange = getRecentKeywordRange();
@@ -28,6 +26,7 @@ function triggerKeywordReplace_modern(replaceBy, pos) {
 	suggestionContainer.dataset.active = "false";
 }
 
+/*
 function triggerKeywordReplace(replaceBy, pos) {
 	const code = getCodeFromEditor(editor);
 
@@ -48,10 +47,11 @@ function triggerKeywordReplace(replaceBy, pos) {
 	console.log(keywordStartIdx);
 	setCaret(keywordStartIdx + replaceBy.length, editor);
 }
+*/
 
 function handleSuggestionPress(e) {
 	// triggerKeywordReplace(e.target.innerText, gCaretPos);
-	triggerKeywordReplace_modern(e.target.innerText, gCaretPos);
+	triggerKeywordReplace(e.target.innerText, gCaretPos);
 	e.preventDefault();
 	e.stopPropagation();
 }
@@ -82,8 +82,7 @@ export function SuggestionEngineInit() {
 }
 
 export function Completion(editor) {
-	getRecentKeyword_modern();
-	const userTypedWord = getRecentKeyword_modern(editor);
+	const userTypedWord = getRecentKeyword(editor);
 	suggestionContainer.innerHTML = "";
 	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') {
 		suggestionContainer.dataset.active = "false";

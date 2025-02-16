@@ -112,7 +112,7 @@ export function getRecentKeywordRange() {
 	return ret;
 }
 
-export function getRecentKeyword_modern() {
+export function getRecentKeyword() {
 	const currCaretRange = window.getSelection().getRangeAt(0).cloneRange();
 	if (currCaretRange.endOffset == 0 || currCaretRange.startOffset == 0) {
 		currCaretRange.setStart(currCaretRange.endContainer, 0);
@@ -150,6 +150,7 @@ export function getRecentKeyword_modern() {
 	return word;
 }
 
+/*
 export function getRecentKeyword(editor) {
 	const code = getCodeFromEditor(editor);
 	let pos = getCaretPositionWithNewlines(editor) - 1;
@@ -172,6 +173,7 @@ export function getRecentKeyword(editor) {
 
 	return word;
 }
+*/
 
 function handleTabs(editor) {
 	editor.addEventListener("keydown", (e) => {
