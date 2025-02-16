@@ -12,15 +12,19 @@ function triggerKeywordReplace(replaceBy, pos) {
 	const sel = window.getSelection();
 	setCaret(pos, editor);
 	const toReplaceKeywordRange = getRecentKeywordRange();
-	toReplaceKeywordRange.deleteContents();
-	toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
-	sel.addRange(toReplaceKeywordRange);
+	const currentText = toReplaceKeywordRange.toString();
+	if (currentText) {
+		toReplaceKeywordRange.setStart(toReplaceKeywordRange.startContainer, toReplaceKeywordRange.startOffset - 1);
+		toReplaceKeywordRange.deleteContents();
+		toReplaceKeywordRange.insertNode(document.createTextNode(replaceBy));
+		sel.addRange(toReplaceKeywordRange);
 
-	const updatedCaret = document.createRange();
-	updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
-	updatedCaret.collapse();
-	sel.removeAllRanges();
-	sel.addRange(updatedCaret);
+		const updatedCaret = document.createRange();
+		updatedCaret.setStart(toReplaceKeywordRange.endContainer, toReplaceKeywordRange.endOffset);
+		updatedCaret.collapse();
+		sel.removeAllRanges();
+		sel.addRange(updatedCaret);
+	}
 
 	suggestionContainer.innerHTML = "";
 	suggestionContainer.dataset.active = "false";
