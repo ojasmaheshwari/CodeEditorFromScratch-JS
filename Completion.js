@@ -117,31 +117,31 @@ export function Completion(editor) {
 
 function updateSuggestionUI(scoresData) {
 	const caretCoords = getCaretGlobalCoordinates();
-	suggestionContainer.style.left = `${caretCoords.x}px`;
-	suggestionContainer.style.top = `${caretCoords.y + 20}px`;
-	
-	const fragment = document.createDocumentFragment();
-	
-	const firstDummy = document.createElement('button');
-	firstDummy.className = 'first-dummy-suggestion';
-	fragment.appendChild(firstDummy);
-	
-	scoresData.forEach(data => {
-		const suggestion = document.createElement('button');
-		suggestion.className = 'suggestion' + (OPMModeSettings.active ? ' opm-suggestion' : '');
-		suggestion.textContent = data.token;
-		fragment.appendChild(suggestion);
-	});
-	
-	const lastDummy = document.createElement('button');
-	lastDummy.className = 'last-dummy-suggestion';
-	fragment.appendChild(lastDummy);
-	
-	suggestionContainer.innerHTML = '';
-	suggestionContainer.appendChild(fragment);
+	const caretX = caretCoords.x, caretY = caretCoords.y;
+	suggestionContainer.style.left = `${caretX}px`;
+	suggestionContainer.style.top = `${caretY + 20}px`;
 	suggestionContainer.dataset.active = "true";
-	
+
+	gCaretPos = getCaretPosition(editor);
+
+	const firstDummyChoice = document.createElement('button');
+	firstDummyChoice.classList.add('first-dummy-suggestion');
+	suggestionContainer.appendChild(firstDummyChoice);
+
+	for (let i = 0; i < scoresData.length; i++) {
+		const data = scoresData[i];
+		const suggestion = document.createElement('button');
+		suggestion.classList.add('suggestion');
+		if (OPMModeSettings.active) suggestion.classList.add('opm-suggestion');
+		suggestion.innerText = data.token;
+		suggestionContainer.appendChild(suggestion);
+		document.body.appendChild(suggestionContainer);
+	}
 	SuggestionNavigationProps.currentSuggestionIndex = 0;
 	SuggestionNavigationProps.firstSuggestionIndex = 0;
-	SuggestionNavigationProps.lastSuggestionIndex = scoresData.length - 1;
+	SuggestionNavigationProps.lastSuggestionIndex = keywords.length - 1;
+
+	const lastDummyChoice = document.createElement('button');
+	lastDummyChoice.classList.add('last-dummy-suggestion');
+	suggestionContainer.appendChild(lastDummyChoice);	
 }
