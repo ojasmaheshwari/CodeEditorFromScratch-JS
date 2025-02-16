@@ -90,7 +90,7 @@ export function Completion(editor) {
 	}
 	
 	completionTimeout = setTimeout(() => {
-		const userTypedWord = getRecentKeyword_modern(editor);
+		const userTypedWord = getRecentKeyword(editor);
 		if (!userTypedWord || /^[\s\n\t]$/.test(userTypedWord)) {
 			suggestionContainer.dataset.active = "false";
 			suggestionContainer.innerHTML = "";
