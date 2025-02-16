@@ -70,47 +70,63 @@ export function SuggestionEngineInit() {
 	suggestionContainer.addEventListener("click", (e) => {handleSuggestionPress(e)});
 }
 
+
+let completionTimeout = null;
+
 export function Completion(editor) {
-	getRecentKeyword_modern();
-	const userTypedWord = getRecentKeyword_modern(editor);
-	suggestionContainer.innerHTML = "";
-	if (userTypedWord === '' || !userTypedWord || userTypedWord === ' ' || userTypedWord === '\n' || userTypedWord === '\t') {
-		suggestionContainer.dataset.active = "false";
-		return;
+	if (completionTimeout) {
+		clearTimeout(completionTimeout);
 	}
+	
+	completionTimeout = setTimeout(() => {
+		const userTypedWord = getRecentKeyword_modern(editor);
+		if (!userTypedWord || /^[\s\n\t]$/.test(userTypedWord)) {
+			suggestionContainer.dataset.active = "false";
+			suggestionContainer.innerHTML = "";
+			return;
+		}
 
-	const lexemes = lexer(getCodeFromEditor(editor));
-	const keywords = getKeywordsFromLexemes(lexemes);
-	const scoresData = fuzzySearch(keywords, userTypedWord);
+		const lexemes = lexer(getCodeFromEditor(editor));
+		const keywords = getKeywordsFromLexemes(lexemes);
+		const scoresData = fuzzySearch(keywords, userTypedWord);
+		
+		if (scoresData.length === 0) {
+			suggestionContainer.dataset.active = "false";
+			suggestionContainer.innerHTML = "";
+			return;
+		}
 
+		updateSuggestionUI(scoresData);
+	}, 150); 
+}
+
+function updateSuggestionUI(scoresData) {
 	const caretCoords = getCaretGlobalCoordinates();
-	const caretX = caretCoords.x, caretY = caretCoords.y;
-	suggestionContainer.style.left = `${caretX}px`;
-	suggestionContainer.style.top = `${caretY + 20}px`;
-	suggestionContainer.dataset.active = "true";
-
-	gCaretPos = getCaretPosition(editor);
-
-	const firstDummyChoice = document.createElement('button');
-	firstDummyChoice.classList.add('first-dummy-suggestion');
-	suggestionContainer.appendChild(firstDummyChoice);
-
-	for (let i = 0; i < scoresData.length; i++) {
-		const data = scoresData[i];
-
+	suggestionContainer.style.left = `${caretCoords.x}px`;
+	suggestionContainer.style.top = `${caretCoords.y + 20}px`;
+	
+	const fragment = document.createDocumentFragment();
+	
+	const firstDummy = document.createElement('button');
+	firstDummy.className = 'first-dummy-suggestion';
+	fragment.appendChild(firstDummy);
+	
+	scoresData.forEach(data => {
 		const suggestion = document.createElement('button');
-		suggestion.classList.add('suggestion');
-		if (OPMModeSettings.active) suggestion.classList.add('opm-suggestion');
-		suggestion.innerText = data.token;
-		suggestionContainer.appendChild(suggestion);
-		document.body.appendChild(suggestionContainer);
-	}
-
+		suggestion.className = 'suggestion' + (OPMModeSettings.active ? ' opm-suggestion' : '');
+		suggestion.textContent = data.token;
+		fragment.appendChild(suggestion);
+	});
+	
+	const lastDummy = document.createElement('button');
+	lastDummy.className = 'last-dummy-suggestion';
+	fragment.appendChild(lastDummy);
+	
+	suggestionContainer.innerHTML = '';
+	suggestionContainer.appendChild(fragment);
+	suggestionContainer.dataset.active = "true";
+	
 	SuggestionNavigationProps.currentSuggestionIndex = 0;
 	SuggestionNavigationProps.firstSuggestionIndex = 0;
-	SuggestionNavigationProps.lastSuggestionIndex = keywords.length - 1;
-
-	const lastDummyChoice = document.createElement('button');
-	lastDummyChoice.classList.add('last-dummy-suggestion');
-	suggestionContainer.appendChild(lastDummyChoice);
+	SuggestionNavigationProps.lastSuggestionIndex = scoresData.length - 1;
 }
