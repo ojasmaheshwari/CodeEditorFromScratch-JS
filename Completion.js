@@ -65,9 +65,20 @@ function manageSuggestionFocus(e) {
 	}
 }
 
+function handleSuggestionKeyEvents(e) {
+	if (e.key === "Escape") {
+		suggestionContainer.innerHTML = "";
+		suggestionContainer.dataset.active = "false";
+
+		// Set caret to the position before the suggestionContainer was open
+		setCaret(getCaretPosition(editor), editor);
+	}
+}
+
 export function SuggestionEngineInit() {
 	suggestionContainer.addEventListener("focusin", manageSuggestionFocus);
 	suggestionContainer.addEventListener("click", (e) => {handleSuggestionPress(e)});
+	suggestionContainer.addEventListener("keydown", (e) => {handleSuggestionKeyEvents(e)})
 }
 
 export function Completion(editor) {
