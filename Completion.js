@@ -96,7 +96,7 @@ export function Completion(editor) {
 			suggestionContainer.innerHTML = "";
 			return;
 		}
-
+		gCaretPos = getCaretPosition(editor);
 		const lexemes = lexer(getCodeFromEditor(editor));
 		const keywords = getKeywordsFromLexemes(lexemes);
 		const scoresData = fuzzySearch(keywords, userTypedWord);
