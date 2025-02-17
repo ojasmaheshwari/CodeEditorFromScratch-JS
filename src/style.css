@@ -100,7 +100,7 @@ body {
 }
 
 .opm-background {
-	background-image: url("res/opm-wallpaper.jpg");
+	background-image: url("../opm-wallpaper.jpg");
 	background-position: cover;
 	background-repeat: no-repeat;
   background-origin: content-box;
