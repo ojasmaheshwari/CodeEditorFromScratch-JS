@@ -145,6 +145,11 @@ export function getRecentKeyword(editor) {
 	return word;
 }
 */
+const STORAGE_KEY = 'editor_content';
+
+function saveCodeToStorage(code) {
+    localStorage.setItem(STORAGE_KEY, code);
+}
 
 function handleTabs(editor) {
 	editor.addEventListener("keydown", (e) => {
@@ -171,27 +176,37 @@ function handleTabs(editor) {
 
 
 function handleKeyPresses(editor) {
-	highlight(editor);
-	editor.addEventListener("keyup", (e) => {
-		e.preventDefault();
-		if (e.key === "Escape") {
-			suggestionContainer.innerHTML = "";
-			suggestionContainer.dataset.active = "false";
-		}
-		else if (e.keyCode >= 0x30 || e.keyCode == 0x20) {
-			const pos = getCaretPosition(editor);
-			highlight(editor);
-			setCaret(pos, editor);
-			debounce(() => Completion(editor), g.completionDebounceInterval)();
-		}
-	});
+    highlight(editor);
+    
+    const debouncedSave = debounce(() => {
+        const code = getCodeFromEditor(editor);
+        saveCodeToStorage(code);
+    }, g.saveDebounceInterval);
 
-	editor.addEventListener("keydown", (e) => {
-		if (e.key === "Backspace" && window.getSelection().getRangeAt(0).startOffset === 0) {
-			highlight(editor);
-			Completion(editor);
-		}
-	});
+    editor.addEventListener("keyup", (e) => {
+        e.preventDefault();
+        if (e.key === "Escape") {
+            suggestionContainer.innerHTML = "";
+            suggestionContainer.dataset.active = "false";
+        }
+        else if (e.keyCode >= 0x30 || e.keyCode == 0x20) {
+            const pos = getCaretPosition(editor);
+            highlight(editor);
+            setCaret(pos, editor);
+            debounce(() => Completion(editor), g.completionDebounceInterval)();
+            debouncedSave();
+        }
+    });
+
+    editor.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace") {
+            debouncedSave();
+            if (window.getSelection().getRangeAt(0).startOffset === 0) {
+                highlight(editor);
+                Completion(editor);
+            }
+        }
+    });
 }
 
 export function insertCodeIntoEditor(editor, code) {
@@ -203,10 +218,13 @@ export function insertCodeIntoEditor(editor, code) {
 }
 
 export function CreateEditor(editor, defaultCode = placeholderCode) {
-	editor.innerText = "";
-	insertCodeIntoEditor(editor, defaultCode);
+    const savedCode = localStorage.getItem(STORAGE_KEY);
+    const codeToUse = savedCode || defaultCode;
+    
+    editor.innerText = "";
+    insertCodeIntoEditor(editor, codeToUse);
 
-	SuggestionEngineInit();
-	handleTabs(editor);
-	handleKeyPresses(editor);
+    SuggestionEngineInit();
+    handleTabs(editor);
+    handleKeyPresses(editor);
 }
