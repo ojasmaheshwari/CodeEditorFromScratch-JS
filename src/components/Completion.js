@@ -1,10 +1,10 @@
-import {lexer, getKeywordsFromLexemes, isSymbol} from "./Lexer.js";
-import {fuzzySearch} from "./FuzzySearch.js";
-import {getCodeFromEditor, getRecentKeyword, getRecentKeywordRange} from "./editor.js";
+import {lexer, getKeywordsFromLexemes, isSymbol} from "../core/Lexer.js";
+import {fuzzySearch} from "../core/FuzzySearch.js";
+import {getCodeFromEditor, getRecentKeyword, getRecentKeywordRange} from "../editor/editor.js";
 import {getCaretGlobalCoordinates, getCaretPosition, setCaret} from "./Caret.js";
-import {editor, suggestionContainer} from "./DOMElements.js";
+import {editor, suggestionContainer} from "../global/DOMElements.js";
 import {SuggestionNavigationProps} from "./SuggestionNavigation.js";
-import {OPMModeSettings} from "./Globals.js";
+import {OPMModeSettings} from "../global/Globals.js";
 
 let gCaretPos = 0;
 

@@ -1,4 +1,4 @@
-import {keywords} from "./Lexer.js";
+import {keywords} from "../core/Lexer.js";
 
 const ColorMapping = {
 	keywords: "#569cd6",

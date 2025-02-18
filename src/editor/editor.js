@@ -1,10 +1,10 @@
-import {highlight} from "./SyntaxHighlighting.js";
-import {getCaretPosition, setCaret} from "./Caret.js";
-import {Completion, SuggestionEngineInit} from "./Completion.js";
-import {suggestionContainer} from "./DOMElements.js";
-import {OnePunchhhhhhhhhhhhh} from "./VeryImportantFileDoNotTouchPleaseContainsSecretToUniverse.js";
-import {g, placeholderCode} from "./Globals.js";
-import {debounce} from "./Utility.js";
+import {highlight} from "../components/SyntaxHighlighting.js";
+import {getCaretPosition, setCaret} from "../components/Caret.js";
+import {Completion, SuggestionEngineInit} from "../components/Completion.js";
+import {suggestionContainer} from "../global/DOMElements.js";
+import {OnePunchhhhhhhhhhhhh} from "../secrets/VeryImportantFileDoNotTouchPleaseContainsSecretToUniverse.js";
+import {g, placeholderCode} from "../global/Globals.js";
+import {debounce} from "../core/Utility.js";
 
 export function getCodeFromEditor(editor) {
 	let code = "";
