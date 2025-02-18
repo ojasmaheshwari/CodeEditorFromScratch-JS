@@ -1,4 +1,4 @@
-import {editor} from "./DOMElements.js";
+import {editor} from "../global/DOMElements.js";
 import {CreateEditor} from "./editor.js";
 
 function main() {
