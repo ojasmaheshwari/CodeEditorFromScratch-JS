@@ -2,13 +2,21 @@
   "name": "codeeditorfromscratch-vite",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+	"files":["dist"],
+  "main":"./dist/niance-editor.umd.js",
+  "module":"./dist/niance-editor.es.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "devDependencies": {
+  "devDependencies":{
     "vite": "^6.1.0"
-  }
+  },
+	"exports":{
+		"." : {
+			"import": "./dist/niance-editor.es.js",
+			"require": "./dist/niance-editor.umd.js"
+		}
+	}
 }
