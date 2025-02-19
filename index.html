@@ -5,12 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Code Editor</title>
-	<link rel="stylesheet" href="src/styles/style.css">
-	<script defer type="module" src="src/editor/main.js"></script>
+	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-	<div id="suggestion-container" data-active="false"></div>
 	<h1>C++ Code Editor From Scratch</h1>
 	<h3>Regex Based (A Full Custom Parser and Lexer version coming soon)</h3>
 	<h4>By <a href="https://github.com/ojasmaheshwari" target="_blank">Ojas Maheshwari</a></h4>
@@ -19,6 +17,17 @@
 	</h5>
 	<div class="editor" contenteditable="true" spellcheck="false">
 	</div>
+
+	<script defer type="module">
+		import NianceEditor from "./lib/main.js";
+
+		const {CreateEditor, InitializeEditor} = NianceEditor;
+
+		const editor = document.querySelector(".editor");
+
+		InitializeEditor(editor);
+		CreateEditor();
+	</script>
 </body>
 
 </html>
