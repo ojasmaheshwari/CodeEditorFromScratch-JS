@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/niance-editor@1/dist/minimal_styles.css">
+</head>
+
+<body>
+	<h1>Niance Editor</h1>
+	<div class="editor" contenteditable="true" spellcheck="false">
+	</div>
+
+	<script type="module">
+		import nianceEditor from 'https://cdn.jsdelivr.net/npm/niance-editor@1/+esm';
+
+		const {CreateEditor, InitializeEditor} = nianceEditor;
+
+		const editor = document.querySelector(".editor");
+		InitializeEditor(editor);
+		CreateEditor();
+	</script>
+</body>
+
+</html>
