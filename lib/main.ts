@@ -1,4 +1,4 @@
-import {CreateEditor, InitializeEditor} from "./editor/editor.js";
+import {CreateEditor, InitializeEditor} from "./editor/editor.ts";
 
 const NianceEditor = {
 	CreateEditor,

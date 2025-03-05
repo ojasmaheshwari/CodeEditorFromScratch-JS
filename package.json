@@ -1,22 +1,28 @@
 {
   "name": "niance-editor",
   "private": false,
-	"description": "A fast and performant web-based code editor with autocomplete and syntax-highlighting out of the box",
-  "version": "1.0.2",
-  "main":"./lib/main",
-	"types": "./lib/main",
-	"author": "Ojas Maheshwari",
-	"repository": {
+  "description": "A fast and performant web-based code editor with autocomplete and syntax-highlighting out of the box",
+  "version": "1.0.3",
+  "main": "./lib/main",
+  "types": "./lib/main",
+  "author": "Ojas Maheshwari",
+	"type": "module",
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/ojasmaheshwari/CodeEditorFromScratch-JS"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
-  "devDependencies":{
+  "devDependencies": {
+    "typescript": "^5.7.3",
     "vite": "^6.1.0"
   },
-	"keywords": ["web", "editor", "niance"]
+  "keywords": [
+    "web",
+    "editor",
+    "niance"
+  ]
 }
