@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"module": "node16",
+    "target": "es2020", // set to the *lowest* target you support
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "rootDir": "lib",
+    "outDir": "built",
+		"allowJs": true,
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+	},
+	"include": ["./lib/**/*"]
+}
