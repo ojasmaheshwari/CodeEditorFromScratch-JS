@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"module": "node16",
-    "target": "es2020", // set to the *lowest* target you support
+    "target": "es2021", // set to the *lowest* target you support
     "strict": true,
     "verbatimModuleSyntax": true,
     "declaration": true,
@@ -12,6 +12,7 @@
 		"allowJs": true,
 		"allowImportingTsExtensions": true,
 		"noEmit": true,
+    "lib": ["es2021", "dom"],
 	},
 	"include": ["./lib/**/*"]
 }
