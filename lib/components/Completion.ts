@@ -113,7 +113,7 @@ export function Completion(editor: HTMLElement): void {
   suggestionContainer.appendChild(firstDummyChoice);
 
   console.log(scoresData);
-  for (let i = 0; i < scoresData.length; i++) {
+  for (let i = 0; i < Math.min(scoresData.length,5); i++) {
     const data = scoresData[i];
 
     const suggestion = document.createElement('button');
