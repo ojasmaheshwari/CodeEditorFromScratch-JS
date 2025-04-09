@@ -16,7 +16,7 @@ Note:
 - I use Levenshtein edit distance algorithm for judging similarity of two strings. It is not very accurate because edit distance is not the only viable measure of similarity but it is decent enough. I can develop additional algorithms on top of Levenshtein's in order to improve it.
 - Use default tab navigation and some other nifty tricks in order to do the auto-complete trigger part.
 
-## Future todo stuff
+## Future todos
 - Optimizing using Rope/SumTree or a more refined "one-div-per-keyword" model.
 - Embedding my own C Parser using WebAssembly inside the editor.
 - Remove Regex Portion. Fully depending ona lexer and a parser instead.
